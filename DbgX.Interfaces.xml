@@ -1,0 +1,281 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DbgX.Interfaces</name>
+    </assembly>
+    <members>
+        <member name="T:DbgX.Interfaces.EngineStates">
+            <summary>
+            Flags representing engine states relevant to client command execution. This allows
+            client commands to control what state they are relevant to.
+            </summary>
+        </member>
+        <member name="T:DbgX.Interfaces.ClientCommandOptions">
+            <summary>
+            Flags to control behavior of client command execution
+            </summary>
+        </member>
+        <member name="F:DbgX.Interfaces.ClientCommandOptions.NoEcho">
+            <summary>
+            Instructs the client command manager to not echo the command that was entered.
+            </summary>
+        </member>
+        <member name="T:DbgX.Interfaces.ClientCommandAttribute">
+             <summary>
+             This attribute can be used to mark a method that should be exposed as a "client command".
+             Client commands are debugger console commands that are processed in the client. Arguments
+             to the client command are parsed and matched up to paremters of the function. Parsing can
+             be customized with ClientParameterAttributes.
+            
+             ClientCommandAttribute derives from ExportAttribute and automatically marks the function
+             as an export.
+             </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.ClientCommandAttribute.Priority">
+            <summary>
+            Priority of this export. Can be used to override another (potentially built-in) client command with a custom implementation.
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.ClientCommandAttribute.AvailableStates">
+            <summary>
+            Engine states where this client command is relevant. Used when this client command is bound to UI (such as a keyboard shortcut).
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.ClientCommandAttribute.GestureKey">
+            <summary>
+            Specifies a shortcut key that can be used to invoke this client command (without parameters).
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.ClientCommandAttribute.GestureModifiers">
+            <summary>
+            Ctrl/Alt/Shift modifiers for the GestureKey
+            </summary>
+        </member>
+        <member name="T:DbgX.Interfaces.KdnetMode">
+            <summary>
+            Describes the different target configurations for KDNET. The correct
+            selection depends on the target device's debug device hardware and
+            how the target is connected to the debug host.
+            </summary>
+        </member>
+        <member name="F:DbgX.Interfaces.KdnetMode.Kdnet">
+            <summary>
+            Regular KDNET over Ethernet using a network interface card (NIC)
+            or VMBus networking for VMs
+            </summary>
+        </member>
+        <member name="F:DbgX.Interfaces.KdnetMode.KdnetOverUsb3">
+            <summary>
+            KDNET over USB3 XHCI. Generally Laptops/Desktops. Uses special
+            A-A USB3 Debug cable.
+            </summary>
+        </member>
+        <member name="F:DbgX.Interfaces.KdnetMode.KdnetOverEEM">
+            <summary>
+            KDNET over device mode USB controller. Generally Phones/Tablets.
+            Uses regular USB A-C or A-MicroB cable.
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.DiscoveredDevice.Name">
+            <summary>
+            REQUIRED: Gives a name to the device for identification in the GUI
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.DiscoveredDevice.Id">
+            <summary>
+            Unique Id for this device. This should be provided if there is a
+            reasonable way for the provider to map a logical device to a Guid
+            based on the underlying discovery method. If an Id is not assigned,
+            the name property must be unique for devices discovered within the
+            simple provider.
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.DiscoveredDevice.Hostname">
+            <summary>
+            REQUIRED: DNS resolvable Hostname or IP address
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.DiscoveredDevice.KdnetMode">
+            <summary>
+            When provided, signals this device can be configured for kernel
+            debugging. When connecting to the kernel debugger, the saved
+            KdConnectionString will be tried (if provided), if that fails,
+            then the current target BCD settings will be read, if that fails,
+            then the device will be configured according to this KdnetMode
+            value.
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.DiscoveredDevice.KdConnectionString">
+            <summary>
+            Provides a static kernel debugging connection string for devices
+            with kd already configured.
+            </summary>
+        </member>
+        <member name="T:DbgX.Interfaces.IDbgDeviceProvider">
+            <summary>
+            Interface to provide an extensibility point into the "Connect to..." page and the rest of the
+            Devices page infrastructure. At its simplest, a provider can just provide the name and IP
+            address of a specific type of device.
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.IDbgDeviceProvider.ProviderName">
+            <summary>
+            Friendly name of this provider for use in logs.
+            Should take the format "&lt;Name&gt;Provider" (ex: "NebulaProvider")
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.IDbgDeviceProvider.DeviceType">
+            <summary>
+            Friendly display string for devices produced by this provider, for use in UI
+            Should read like "Virtual Machine" "USB Device"
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.IDbgDeviceProvider.Icon">
+            <summary>
+            URL to icon to show in UI to associate devices produced by this provider
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.IDbgDeviceProvider.RequiresElevation">
+            <summary>
+            Whether this device provider requires administrator privileges to run discovery
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.IDbgDeviceProvider.IsInstalled">
+            <summary>
+            Whether this device provider is capable of running discovery in the current environment
+            </summary>
+        </member>
+        <member name="M:DbgX.Interfaces.IDbgDeviceProvider.DiscoverDevicesAsync">
+            <summary>
+            Run device discovery to provide a list of DiscoveredDevice.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:DbgX.Interfaces.NamedPartMetadata">
+            <summary>
+            Named part metadata is used on components that have a name, such as "LocalsToolWindow". Named parts
+            are designed to allow parts to be loosely coupled between components and to allow a built-in named
+            part to be overriden by an extension's named part. Today when a conflict exists, an arbitrary
+            component will be used, but in the future the user will be given a choice on which part to use.
+            </summary>
+        </member>
+        <member name="T:DbgX.Interfaces.IDbgToolWindow">
+             <summary>
+             IDbgToolWindow represents a tool window factory. When a toolwindow is requested, GetToolWindowView
+             will be called, and the return value from this method will be used as the view of a toolwindow.
+            
+             If this interface is implemented for a single-instance window (e.g. locals window), then the same
+             view should be returned each time it is called. If this interface is implemented for a multiple-instance
+             window (like the source windows), then a different view should be returned each time (dependent on the parameters,
+             since it is valid to return the same view twice for the same source file).
+            
+             To provide a custom tab title and tool window actions, set the DependencyProperties defined in the ToolWindowView
+             class. Some dependency properties can only be set on objects derived from ToolWindowView, so it is suggested
+             that the FrameworkElement you return from GetToolWindowView is derived from ToolWindowView.
+            
+             If the tool window state should be persisted across debugger instances, use the attached property IsWindowPersisted.
+             To save settings (and be recreated with the settings as a parameter), you can use the attached property PersistedWindowSettings.
+             </summary>
+        </member>
+        <member name="M:DbgX.Interfaces.IDbgToolWindow.GetToolWindowView(System.Object)">
+            <summary>
+            Returns a control representing a toolwindow view. Returning the same control on subsequent calls will reuse the original
+            window and activate it. Returning a new view allows for multiple instances of the toolwindow.
+            </summary>
+            <param name="parameter">A parameter that can be used to customize the toolwindow (for example, a file path could be used)</param>
+            <returns>A control representing the view for this tool window instance.</returns>
+        </member>
+        <member name="T:DbgX.Interfaces.UI.IDbgToolWindowInstance">
+            <summary>
+            Represents an instance of a toolwindow.
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.UI.IDbgToolWindowInstance.ToolWindowName">
+            <summary>
+            The name of the tool window that this corresponds to, e.g. from the NamedPartMetadata.
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.UI.IDbgToolWindowInstance.ToolWindowTitle">
+            <summary>
+            The user-facing name of the tool window that this corresponds to, used primarily for accessibility purposes
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.UI.IDbgToolWindowInstance.IsDocument">
+            <summary>
+            True if this is a document-style toolwindow.
+            A document window can be resized to fit the whole screen, and can be docked with other document or non-document tabs.
+            </summary>
+        </member>
+        <member name="P:DbgX.Interfaces.UI.IDbgToolWindowInstance.Content">
+            <summary>
+            The view for this tool window instance.
+            </summary>
+        </member>
+        <member name="F:DbgX.Interfaces.UI.ToolWindowView.IsDocumentProperty">
+            <summary>
+            True if this view represents a document -- a document window can be resized to fit the whole screen, and can be docked with other document or non-document tabs.
+            If false, the window can only be snapped to the sides of the screen.
+            </summary>
+        </member>
+        <member name="T:DbgX.Interfaces.IDbgToolWindowManager">
+            <summary>
+            The tool window manager is responsible for opening, closing, and activating tool windows.
+            It is also responsible for keeping track of the open windows.
+            </summary>
+        </member>
+        <member name="M:DbgX.Interfaces.IDbgToolWindowManager.OpenToolWindow(System.String,System.Object)">
+            <summary>
+            Opens a tool window given the tool window type name and an optional parameter.
+            </summary>
+            <param name="name">The name of the tool window to open, e.g. "SourceToolWindow"</param>
+            <param name="parameter">An optional parameter specific to the tool window, e.g. a source file path for a source tool window</param>
+            <returns>The newly opened tool window</returns>
+        </member>
+        <member name="M:DbgX.Interfaces.IDbgToolWindowManager.CloseToolWindow(System.String,System.Object)">
+            <summary>
+            Closes a tool window given the tool window type name and an optional parameter.
+            </summary>
+            <param name="name">The name of the tool window to open, e.g. "SourceToolWindow"</param>
+            <param name="parameter">An optional parameter specific to the tool window, e.g. a source file path for a source tool window</param>
+        </member>
+        <member name="M:DbgX.Interfaces.IDbgToolWindowManager.GetToolWindowInstance(System.String,System.Object)">
+            <summary>
+            Find a tool window by its name and the parameter that was used to create it.
+            </summary>
+            <param name="name">The tool window type name</param>
+            <param name="parameter">The tool window parameter</param>
+            <returns></returns>
+        </member>
+        <member name="M:DbgX.Interfaces.IDbgToolWindowManager.GetAllOpenToolWindows">
+            <summary>
+            Finds all open tool windows.
+            </summary>
+            <returns>The list of open toolwindows</returns>
+        </member>
+        <member name="M:DbgX.Interfaces.IDbgToolWindowManager.TryCloseToolWindow(DbgX.Interfaces.UI.IDbgToolWindowInstance)">
+            <summary>
+            Requests to close a tool window. The tool window may implement IDbgNotifyTabClosed to
+            block tab closures (e.g. "Do you want to save this file?")
+            </summary>
+            <param name="instance">The toolwindow to close.</param>
+            <returns>true if the toolwindow was closed, or false if the close action was cancelled</returns>
+        </member>
+        <member name="M:DbgX.Interfaces.IDbgToolWindowManager.SetActiveToolWindow(DbgX.Interfaces.UI.IDbgToolWindowInstance)">
+            <summary>
+            Activates a tool window and brings it to the front.
+            </summary>
+            <param name="instance">The tool window to activate</param>
+        </member>
+        <member name="M:DbgX.Interfaces.IDbgToolWindowManager.GetActiveToolWindow">
+            <summary>
+            Returns the tool window that is currently active.
+            </summary>
+            <returns>The active tool window</returns>
+        </member>
+        <member name="T:DbgX.Interfaces.ToolWindowEventArgs">
+            <summary>
+            Event arguments used for any event that refers to a tool window (such as opening or closing)
+            </summary>
+        </member>
+    </members>
+</doc>

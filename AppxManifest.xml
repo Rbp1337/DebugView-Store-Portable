@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+         xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+         xmlns:desktop2="http://schemas.microsoft.com/appx/manifest/desktop/windows10/2"
+         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+         xmlns:virtualization="http://schemas.microsoft.com/appx/manifest/virtualization/windows10"
+         xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
+         IgnorableNamespaces="uap3 desktop2 virtualization desktop6">
+  <Identity Name="Microsoft.WinDbg" ProcessorArchitecture="x64" Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" Version="1.2306.12001.0" />
+  <Properties>
+    <DisplayName>WinDbg</DisplayName>
+    <PublisherDisplayName>Microsoft Corporation</PublisherDisplayName>
+    <Logo>Resources\WinDbg_150.png</Logo>
+    <desktop6:FileSystemWriteVirtualization>disabled</desktop6:FileSystemWriteVirtualization>
+  </Properties>
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MaxVersionTested="10.0.19041.0" MinVersion="10.0.17763.0"/>
+  </Dependencies>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="packageQuery" />
+    <rescap:Capability Name="allowElevation" />
+    <rescap:Capability Name="unvirtualizedResources" />
+  </Capabilities>
+  <Applications>
+      <Application Id="Microsoft.WinDbg.DbgSrvX64" Executable="amd64\dbgsrv.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap:VisualElements AppListEntry="none" DisplayName="WinDbg DbgSrv X64" Description="WinDbg DbgSrv X64" BackgroundColor="#777777" Square150x150Logo="Resources\WinDbg_150.png" Square44x44Logo="Resources\WinDbg_44.png"/>
+          <Extensions>
+              <uap3:Extension Category="windows.appExecutionAlias" Executable="amd64\dbgsrv.exe" EntryPoint="Windows.FullTrustApplication">
+                  <uap3:AppExecutionAlias>
+                      <desktop:ExecutionAlias Alias="dbgsrvX64.exe" />
+                  </uap3:AppExecutionAlias>
+              </uap3:Extension>
+          </Extensions>
+      </Application>
+      <Application Id="Microsoft.WinDbg.DbgSrvX86" Executable="x86\dbgsrv.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap:VisualElements AppListEntry="none" DisplayName="WinDbg DbgSrv X86" Description="WinDbg DbgSrv X86" BackgroundColor="#777777" Square150x150Logo="Resources\WinDbg_150.png" Square44x44Logo="Resources\WinDbg_44.png"/>
+          <Extensions>
+              <uap3:Extension Category="windows.appExecutionAlias" Executable="x86\dbgsrv.exe" EntryPoint="Windows.FullTrustApplication">
+                  <uap3:AppExecutionAlias>
+                      <desktop:ExecutionAlias Alias="dbgsrvX86.exe" />
+                  </uap3:AppExecutionAlias>
+              </uap3:Extension>
+          </Extensions>
+      </Application>
+      <Application Id="Microsoft.WinDbg.DbgSrvARM64" Executable="arm64\dbgsrv.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap:VisualElements AppListEntry="none" DisplayName="WinDbg DbgSrv ARM64" Description="WinDbg DbgSrv ARM64" BackgroundColor="#777777" Square150x150Logo="Resources\WinDbg_150.png" Square44x44Logo="Resources\WinDbg_44.png"/>
+          <Extensions>
+              <uap3:Extension Category="windows.appExecutionAlias" Executable="arm64\dbgsrv.exe" EntryPoint="Windows.FullTrustApplication">
+                  <uap3:AppExecutionAlias>
+                      <desktop:ExecutionAlias Alias="dbgsrvARM64.exe" />
+                  </uap3:AppExecutionAlias>
+              </uap3:Extension>
+          </Extensions>
+      </Application>
+    <Application Id="Microsoft.WinDbg" Executable="DbgX.Shell.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="WinDbg" Description="WinDbg" BackgroundColor="#777777" Square150x150Logo="Resources\WinDbg_150.png" Square44x44Logo="Resources\WinDbg_44.png"/>
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap3:FileTypeAssociation Name="newtypes" Parameters="-z &quot;%1&quot;" desktop2:UseUrl="true">
+            <uap:SupportedFileTypes>
+              <uap:FileType>.run</uap:FileType>
+              <uap:FileType>.dmp</uap:FileType>
+              <uap:FileType>.mdmp</uap:FileType>
+              <uap:FileType>.hdmp</uap:FileType>
+              <uap:FileType>.kdmp</uap:FileType>
+              <uap:FileType>.ndmp</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap3:FileTypeAssociation>
+        </uap:Extension>
+        <uap3:Extension Category="windows.appExecutionAlias" Executable="DbgX.Shell.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap3:AppExecutionAlias>
+            <desktop:ExecutionAlias Alias="WinDbgX.exe" />
+          </uap3:AppExecutionAlias>
+        </uap3:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Extensions>
+    <desktop2:Extension Category="windows.firewallRules">
+      <desktop2:FirewallRules Executable="x86\EngHost.exe">
+        <desktop2:Rule Direction="in" IPProtocol = "TCP" Profile="all" />
+        <desktop2:Rule Direction="in" IPProtocol = "UDP" Profile="all" />
+      </desktop2:FirewallRules>
+    </desktop2:Extension>
+    <desktop2:Extension Category="windows.firewallRules">
+      <desktop2:FirewallRules Executable="amd64\EngHost.exe">
+        <desktop2:Rule Direction="in" IPProtocol = "TCP" Profile="all" />
+        <desktop2:Rule Direction="in" IPProtocol = "UDP" Profile="all" />
+      </desktop2:FirewallRules>
+    </desktop2:Extension>
+    <desktop2:Extension Category="windows.firewallRules">
+      <desktop2:FirewallRules Executable="arm64\EngHost.exe">
+        <desktop2:Rule Direction="in" IPProtocol = "TCP" Profile="all" />
+        <desktop2:Rule Direction="in" IPProtocol = "UDP" Profile="all" />
+      </desktop2:FirewallRules>
+    </desktop2:Extension>
+  </Extensions>
+</Package>
